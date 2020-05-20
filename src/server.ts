@@ -30,17 +30,20 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
     const { image_url } = req.query;
 
     if ( !image_url ) {
-      res.sendStatus(404).send("Image Url not found");
+      res.status(404)
+          .send("Image Url not found");
     }
 
     try {
-    const imagePath: string = await filterImageFromURL(image_url);
+    const filteredpath: string = await filterImageFromURL(image_url);
 
-    res.sendStatus(200).sendFile(imagePath, () => deleteLocalFiles([imagePath]));
-    } catch {
-    res.sendStatus(500).send("Invalid Image Path");
-    }
-  });
+    res.status(200)
+        .sendFile(filteredpath, () => deleteLocalFiles([filteredpath]));
+    } catch ( err ) {
+    res.status(422)
+        .send(err.message || "Internal Server Error");
+      }
+    });
   /**************************************************************************** */
 
   // ! END @TODO1
